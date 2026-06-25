@@ -1,11 +1,13 @@
 ---
 import "../styles/tokens.css";
 import BottomNav from "../components/BottomNav.astro";
+import { link } from "../lib/links";
 
 interface Props {
   title?: string;
 }
 const { title = "Sismicaid" } = Astro.props;
+const swUrl = link("/sw.js");
 ---
 
 <!doctype html>
@@ -15,9 +17,9 @@ const { title = "Sismicaid" } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="dark" />
     <meta name="theme-color" content="#070A0F" />
-    <link rel="manifest" href="/manifest.webmanifest" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href={link("/manifest.webmanifest")} />
+    <link rel="icon" href={link("/favicon.svg")} type="image/svg+xml" />
+    <link rel="apple-touch-icon" href={link("/apple-touch-icon.png")} />
     <title>{title}</title>
   </head>
   <body>
@@ -25,11 +27,12 @@ const { title = "Sismicaid" } = Astro.props;
       <slot />
     </div>
     <BottomNav />
-    <script is:inline>
+    <script is:inline define:vars={{ swUrl }}>
       // Registro del Service Worker (PWA). El sw.js usa autoUpdate.
+      // swUrl ya respeta el base path (raíz o subpath).
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", function () {
-          navigator.serviceWorker.register("/sw.js");
+          navigator.serviceWorker.register(swUrl);
         });
       }
     </script>
