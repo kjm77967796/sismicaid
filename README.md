@@ -1,5 +1,7 @@
 # Sismicaid
 
+**Español** · [English](README.en.md)
+
 **PWA de emergencia para Venezuela.** Centraliza información sísmica oficial,
 estado de tsunami, recomendaciones de prevención, y ayuda/necesidades
 compartidas por la comunidad — rápida, ligera, mobile-first, dark mode y usable
