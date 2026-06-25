@@ -140,6 +140,40 @@ sudo ln -s /etc/nginx/sites-available/sismicaid /etc/nginx/sites-enabled/
 sudo nginx -t && sudo systemctl reload nginx
 ```
 
+### 8.b Despliegue bajo un subpath (p. ej. `TU_DOMINIO/sismicaid`)
+
+Si compartes el dominio con otros proyectos por ruta, define `PUBLIC_BASE_PATH`
+**en el build** (ajusta enlaces internos, assets y PWA) y apunta `PUBLIC_API_URL`
+al subpath:
+
+```bash
+cd /var/www/sismicaid
+PUBLIC_BASE_PATH=/sismicaid \
+PUBLIC_API_URL=https://TU_DOMINIO/sismicaid \
+  pnpm --filter @sismicaid/web build
+```
+
+nginx (en el `server` del dominio, junto a tus otros proyectos):
+
+```nginx
+# API bajo el subpath -> backend (/sismicaid/api/status -> 127.0.0.1:3000/api/status)
+location /sismicaid/api/ {
+  proxy_pass http://127.0.0.1:3000/api/;
+  proxy_set_header Host $host;
+  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+  proxy_set_header X-Forwarded-Proto $scheme;
+}
+
+# Frontend estático bajo el subpath
+location /sismicaid/ {
+  alias /var/www/sismicaid/apps/web/dist/;
+  try_files $uri $uri/ /sismicaid/index.html;
+}
+```
+
+nginx usa *longest-prefix match*, así que `/sismicaid/api/` gana sobre
+`/sismicaid/` automáticamente. El Service Worker queda con scope `/sismicaid/`.
+
 ## 9. TLS
 
 ```bash

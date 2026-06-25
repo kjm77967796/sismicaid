@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { CurrentTsunamiDTO } from "@sismicaid/shared";
+  import { link } from "../lib/links";
   import LastUpdated from "./LastUpdated.svelte";
 
   export let current: CurrentTsunamiDTO | null;
@@ -30,7 +31,7 @@
     <footer>
       <span class="src">Fuente: {alert.provider}</span>
       {#if alert.effectiveAt}<span class="src">Emitido: {new Date(alert.effectiveAt).toLocaleString("es-VE")}</span>{/if}
-      <a href="/recomendaciones">Qué hacer ahora →</a>
+      <a href={link("/recomendaciones")}>Qué hacer ahora →</a>
     </footer>
   </article>
 {:else}

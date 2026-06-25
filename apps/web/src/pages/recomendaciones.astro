@@ -1,12 +1,13 @@
 ---
 import Base from "../layouts/Base.astro";
 import RecommendationsList from "../components/RecommendationsList.svelte";
+import { link } from "../lib/links";
 ---
 
 <Base title="Recomendaciones · Sismicaid">
   <main>
     <header>
-      <a href="/" class="back">← Inicio</a>
+      <a href={link("/")} class="back">← Inicio</a>
       <h1>Recomendaciones</h1>
       <p class="lead">Qué hacer antes, durante y después de un sismo o amenaza de tsunami.</p>
     </header>

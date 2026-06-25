@@ -3,6 +3,7 @@
   import type { CurrentTsunamiDTO, SeismicEventDTO, StatusDTO } from "@sismicaid/shared";
   import { getCurrentTsunami, getSeismicEvents, getStatus } from "../lib/api";
   import { fetchWithCache } from "../lib/cache";
+  import { link } from "../lib/links";
   import StatusBanner from "./StatusBanner.svelte";
   import EventCard from "./EventCard.svelte";
   import LastUpdated from "./LastUpdated.svelte";
@@ -112,10 +113,10 @@
   </section>
 
   <nav class="quick" aria-label="Accesos rápidos">
-    <a href="/sismos">Mapa sísmico</a>
-    <a href="/ayuda">Ayuda cercana</a>
-    <a href="/reportar">Reportar</a>
-    <a href="/recomendaciones">Recomendaciones</a>
+    <a href={link("/sismos")}>Mapa sísmico</a>
+    <a href={link("/ayuda")}>Ayuda cercana</a>
+    <a href={link("/reportar")}>Reportar</a>
+    <a href={link("/recomendaciones")}>Recomendaciones</a>
   </nav>
 {/if}
 

@@ -1,14 +1,18 @@
 ---
 // Navegación inferior fija (mobile-first). Máx 5 items (design.md §9).
+import { link } from "../lib/links";
+
 const { pathname } = Astro.url;
 const items = [
-  { href: "/", label: "Inicio", icon: "⌂" },
-  { href: "/sismos", label: "Sismos", icon: "◴" },
-  { href: "/ayuda", label: "Ayuda", icon: "✚" },
-  { href: "/reportar", label: "Reportar", icon: "✎" },
-  { href: "/recomendaciones", label: "Guía", icon: "☑" },
+  { href: link("/"), label: "Inicio", icon: "⌂" },
+  { href: link("/sismos"), label: "Sismos", icon: "◴" },
+  { href: link("/ayuda"), label: "Ayuda", icon: "✚" },
+  { href: link("/reportar"), label: "Reportar", icon: "✎" },
+  { href: link("/recomendaciones"), label: "Guía", icon: "☑" },
 ];
-const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
+const home = link("/");
+const isActive = (href: string) =>
+  href === home ? pathname === home || `${pathname}/` === home : pathname.startsWith(href);
 ---
 
 <nav aria-label="Navegación principal">
