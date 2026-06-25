@@ -1,0 +1,35 @@
+---
+import Base from "../layouts/Base.astro";
+import CitizenReportsList from "../components/CitizenReportsList.svelte";
+import ReportForm from "../components/ReportForm.svelte";
+---
+
+<Base title="Reportar · Sismicaid">
+  <main>
+    <header>
+      <h1>Reportar</h1>
+      <p class="lead">Daños, necesidades o recursos. Toma menos de un minuto.</p>
+    </header>
+    <ReportForm client:load />
+    <CitizenReportsList client:load />
+  </main>
+</Base>
+
+<style>
+  main {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: var(--space-5) var(--space-4) var(--space-8);
+  }
+  header {
+    margin-bottom: var(--space-5);
+  }
+  h1 {
+    font-size: var(--font-2xl);
+    margin: 0 0 var(--space-1);
+  }
+  .lead {
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+</style>

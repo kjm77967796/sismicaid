@@ -1,0 +1,18 @@
+{
+  "name": "@sismicaid/shared",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "echo \"(shared) no lint configured\"",
+    "test": "echo \"(shared) no tests yet\""
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4"
+  }
+}

@@ -1,0 +1,401 @@
+// Esquema de datos — fuente: docs/DATABASE.md y docs/SPEC.md §6.
+// Los `enum` deben coincidir literalmente con packages/shared/src/enums.ts
+// (verificado por src/schema.test.ts). Columnas en snake_case vía @map.
+
+generator client {
+  provider = "prisma-client-js"
+  // Output explícito: pnpm no resuelve de forma fiable el cliente generado en
+  // node_modules/.prisma; lo emitimos dentro del paquete. (gitignored)
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------- Enums ----------
+
+enum TrustLevel {
+  official
+  verified
+  community_pending
+  outdated
+  rejected
+}
+
+enum SourceType {
+  seismic
+  tsunami
+  civil_protection
+  media
+  manual
+}
+
+enum SourceStatus {
+  active
+  degraded
+  disabled
+}
+
+enum SeismicStatus {
+  automatic
+  reviewed
+  deleted
+}
+
+enum EventType {
+  earthquake
+  quarry_blast
+  other
+}
+
+enum AlertLevel {
+  green
+  yellow
+  orange
+  red
+  unknown
+}
+
+enum TsunamiProvider {
+  NOAA_PTWC
+  NOAA_NTWC
+  LOCAL_AUTHORITY
+}
+
+enum TsunamiStatus {
+  information
+  watch
+  advisory
+  warning
+  canceled
+  unknown
+}
+
+enum CoastalRiskLevel {
+  none
+  info
+  watch
+  warning
+  canceled
+}
+
+enum ResourceType {
+  shelter
+  hospital
+  collection_center
+  water
+  food
+  charging_point
+  communication
+  transport
+  volunteer_center
+}
+
+enum ResourceStatus {
+  active
+  saturated
+  closed
+  unknown
+}
+
+enum CapacityStatus {
+  available
+  limited
+  full
+  unknown
+}
+
+enum LocationPrecision {
+  exact
+  approximate
+  area
+}
+
+enum VerificationStatus {
+  pending
+  verified
+  rejected
+  outdated
+}
+
+enum Urgency {
+  low
+  medium
+  high
+  critical
+}
+
+enum NeedStatus {
+  open
+  in_progress
+  partially_covered
+  covered
+  outdated
+}
+
+enum ReportType {
+  structural_damage
+  blocked_road
+  landslide
+  trapped_person
+  urgent_need
+  available_resource
+  active_shelter
+  collection_center
+  operational_hospital
+  electrical_risk
+  gas_leak
+  no_signal_zone
+  no_water_zone
+  no_power_zone
+}
+
+enum ReportSourceType {
+  first_hand
+  reported_by_other
+  media
+  authority
+  volunteer
+}
+
+enum ReportVerificationStatus {
+  pending
+  in_review
+  verified
+  rejected
+  duplicate
+  outdated
+}
+
+enum RecommendationContext {
+  earthquake_before
+  earthquake_during
+  earthquake_after
+  tsunami
+  coast
+  damaged_building
+  communications
+}
+
+enum FetchStatus {
+  success
+  partial
+  failed
+}
+
+// ---------- Modelos ----------
+
+model OfficialSource {
+  id            String       @id @default(uuid()) @db.Uuid
+  name          String       @unique
+  type          SourceType
+  country       String?
+  baseUrl       String?      @map("base_url")
+  status        SourceStatus @default(active)
+  trustLevel    TrustLevel   @map("trust_level")
+  lastCheckedAt DateTime?    @map("last_checked_at")
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+
+  seismicEvents SeismicEvent[]
+  tsunamiAlerts TsunamiAlert[]
+  resources     Resource[]
+  needs         Need[]
+
+  @@map("official_sources")
+}
+
+model SeismicEvent {
+  id               String          @id @default(uuid()) @db.Uuid
+  externalId       String          @map("external_id")
+  sourceId         String?         @map("source_id") @db.Uuid
+  source           OfficialSource? @relation(fields: [sourceId], references: [id])
+  sourceName       String?         @map("source_name")
+  status           SeismicStatus   @default(automatic)
+  eventType        EventType       @default(earthquake) @map("event_type")
+  place            String?
+  country          String?
+  latitude         Float
+  longitude        Float
+  depthKm          Float?          @map("depth_km")
+  magnitude        Float?
+  magnitudeType    String?         @map("magnitude_type")
+  eventTimeUtc     DateTime        @map("event_time_utc")
+  eventTimeLocal   DateTime?       @map("event_time_local")
+  updatedAtSource  DateTime?       @map("updated_at_source")
+  mmi              Float?
+  cdi              Float?
+  alertLevel       AlertLevel      @default(unknown) @map("alert_level")
+  tsunamiFlag      Boolean         @default(false) @map("tsunami_flag")
+  significance     Int?
+  feltReportsCount Int?            @map("felt_reports_count")
+  detailUrl        String?         @map("detail_url")
+  rawPayload       Json?           @map("raw_payload")
+  createdAt        DateTime        @default(now()) @map("created_at")
+  updatedAt        DateTime        @updatedAt @map("updated_at")
+
+  tsunamiAlerts TsunamiAlert[]
+
+  @@unique([sourceId, externalId])
+  @@index([externalId])
+  @@index([eventTimeUtc])
+  @@index([magnitude])
+  @@index([latitude, longitude])
+  @@index([sourceId])
+  @@index([tsunamiFlag])
+  @@map("seismic_events")
+}
+
+model TsunamiAlert {
+  id                    String          @id @default(uuid()) @db.Uuid
+  externalId            String?         @unique @map("external_id")
+  sourceId              String?         @map("source_id") @db.Uuid
+  source                OfficialSource? @relation(fields: [sourceId], references: [id])
+  provider              TsunamiProvider
+  status                TsunamiStatus   @default(unknown)
+  headline              String
+  description           String?
+  affectedAreaText      String?         @map("affected_area_text")
+  effectiveAt           DateTime?       @map("effective_at")
+  expiresAt             DateTime?       @map("expires_at")
+  eventTimeUtc          DateTime?       @map("event_time_utc")
+  relatedSeismicEventId String?         @map("related_seismic_event_id") @db.Uuid
+  relatedSeismicEvent   SeismicEvent?   @relation(fields: [relatedSeismicEventId], references: [id])
+  rawPayload            Json?           @map("raw_payload")
+  createdAt             DateTime        @default(now()) @map("created_at")
+  updatedAt             DateTime        @updatedAt @map("updated_at")
+
+  @@index([status])
+  @@index([effectiveAt])
+  @@index([expiresAt])
+  @@index([relatedSeismicEventId])
+  @@map("tsunami_alerts")
+}
+
+model CoastalAlertZone {
+  id               String           @id @default(uuid()) @db.Uuid
+  name             String           @unique
+  state            String
+  municipality     String?
+  coastlineGeojson Json?            @map("coastline_geojson")
+  riskLevel        CoastalRiskLevel @default(none) @map("risk_level")
+  lastAlertId      String?          @map("last_alert_id") @db.Uuid
+  updatedAt        DateTime         @updatedAt @map("updated_at")
+
+  @@map("coastal_alert_zones")
+}
+
+model Resource {
+  id                 String             @id @default(uuid()) @db.Uuid
+  type               ResourceType
+  name               String
+  state              String
+  municipality       String?
+  parish             String?
+  latitude           Float?
+  longitude          Float?
+  locationPrecision  LocationPrecision  @default(approximate) @map("location_precision")
+  status             ResourceStatus     @default(unknown)
+  capacityStatus     CapacityStatus     @default(unknown) @map("capacity_status")
+  description        String?
+  publicContact      String?            @map("public_contact")
+  verificationStatus VerificationStatus @default(pending) @map("verification_status")
+  sourceId           String?            @map("source_id") @db.Uuid
+  source             OfficialSource?    @relation(fields: [sourceId], references: [id])
+  createdBy          String?            @map("created_by")
+  lastVerifiedAt     DateTime?          @map("last_verified_at")
+  createdAt          DateTime           @default(now()) @map("created_at")
+  updatedAt          DateTime           @updatedAt @map("updated_at")
+
+  needs Need[]
+
+  @@map("resources")
+}
+
+model Need {
+  id                 String             @id @default(uuid()) @db.Uuid
+  category           String
+  title              String
+  description        String?
+  state              String
+  municipality       String?
+  parish             String?
+  latitude           Float?
+  longitude          Float?
+  locationPrecision  LocationPrecision  @default(approximate) @map("location_precision")
+  urgency            Urgency            @default(medium)
+  quantity           String?
+  status             NeedStatus         @default(open)
+  verificationStatus VerificationStatus @default(pending) @map("verification_status")
+  sourceId           String?            @map("source_id") @db.Uuid
+  source             OfficialSource?    @relation(fields: [sourceId], references: [id])
+  relatedResourceId  String?            @map("related_resource_id") @db.Uuid
+  relatedResource    Resource?          @relation(fields: [relatedResourceId], references: [id])
+  createdBy          String?            @map("created_by")
+  lastVerifiedAt     DateTime?          @map("last_verified_at")
+  createdAt          DateTime           @default(now()) @map("created_at")
+  updatedAt          DateTime           @updatedAt @map("updated_at")
+
+  @@map("needs")
+}
+
+model CitizenReport {
+  id                 String                   @id @default(uuid()) @db.Uuid
+  reportType         ReportType               @map("report_type")
+  title              String
+  description        String?
+  state              String
+  municipality       String?
+  parish             String?
+  latitude           Float?
+  longitude          Float?
+  locationPrecision  LocationPrecision        @default(approximate) @map("location_precision")
+  urgency            Urgency                  @default(medium)
+  evidenceUrl        String?                  @map("evidence_url")
+  reportSourceType   ReportSourceType         @map("report_source_type")
+  // Privado: nunca se expone en DTOs públicos (ver SECURITY_AND_PRIVACY.md).
+  privateContact     String?                  @map("private_contact")
+  publicSafeSummary  String?                  @map("public_safe_summary")
+  verificationStatus ReportVerificationStatus @default(pending) @map("verification_status")
+  moderatorNotes     String?                  @map("moderator_notes")
+  createdAt          DateTime                 @default(now()) @map("created_at")
+  updatedAt          DateTime                 @updatedAt @map("updated_at")
+
+  @@index([verificationStatus])
+  @@index([createdAt])
+  @@map("citizen_reports")
+}
+
+model SafetyRecommendation {
+  id        String                @id @default(uuid()) @db.Uuid
+  context   RecommendationContext
+  title     String
+  body      String
+  priority  Int                   @default(0)
+  sourceId  String?               @map("source_id") @db.Uuid
+  isActive  Boolean               @default(true) @map("is_active")
+  createdAt DateTime              @default(now()) @map("created_at")
+  updatedAt DateTime              @updatedAt @map("updated_at")
+
+  @@map("safety_recommendations")
+}
+
+model FetchRun {
+  id                  String      @id @default(uuid()) @db.Uuid
+  sourceId            String?     @map("source_id") @db.Uuid
+  jobName             String      @map("job_name")
+  status              FetchStatus
+  startedAt           DateTime    @default(now()) @map("started_at")
+  finishedAt          DateTime?   @map("finished_at")
+  itemsFound          Int         @default(0) @map("items_found")
+  itemsCreated        Int         @default(0) @map("items_created")
+  itemsUpdated        Int         @default(0) @map("items_updated")
+  errorMessage        String?     @map("error_message")
+  rawResponseSnapshot Json?       @map("raw_response_snapshot")
+
+  @@index([sourceId])
+  @@index([jobName])
+  @@map("fetch_runs")
+}

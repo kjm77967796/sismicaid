@@ -1,0 +1,25 @@
+# Dependencias
+node_modules/
+
+# Build / artefactos
+dist/
+.astro/
+*.tsbuildinfo
+
+# Cliente Prisma generado (se regenera con `pnpm install` / `prisma generate`)
+**/src/generated/
+
+# Variables de entorno y secretos — NUNCA subir
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+
+# Config local de Claude Code (puede tener ajustes/credenciales de máquina)
+.claude/settings.local.json
+
+# OS / editor
+.DS_Store
+Thumbs.db

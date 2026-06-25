@@ -1,0 +1,97 @@
+/* Tokens de diseño. Fuente única de verdad: docs/design.md.
+   Dark mode only (sin light mode en el MVP). */
+:root {
+  /* Fondo */
+  --color-bg: #070a0f;
+  --color-bg-soft: #0d111a;
+  --color-surface: #121826;
+  --color-surface-raised: #182133;
+
+  /* Bordes */
+  --color-border: #263244;
+  --color-border-soft: #1e293b;
+
+  /* Texto */
+  --color-text: #f8fafc;
+  --color-text-muted: #cbd5e1;
+  --color-text-soft: #94a3b8;
+  --color-text-disabled: #64748b;
+
+  /* Marca / acción primaria */
+  --color-primary: #38bdf8;
+  --color-primary-soft: #0ea5e9;
+  --color-primary-contrast: #02131f;
+
+  /* Estados */
+  --color-success: #22c55e;
+  --color-info: #38bdf8;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --color-critical: #dc2626;
+  --color-unknown: #94a3b8;
+
+  /* Severidad sísmica */
+  --quake-low: #22c55e;
+  --quake-medium: #facc15;
+  --quake-high: #f97316;
+  --quake-severe: #ef4444;
+  --quake-critical: #a855f7;
+
+  /* Tsunami */
+  --tsunami-none: #22c55e;
+  --tsunami-info: #38bdf8;
+  --tsunami-watch: #f59e0b;
+  --tsunami-warning: #ef4444;
+  --tsunami-canceled: #94a3b8;
+
+  /* Tipografía */
+  --font-xs: 0.75rem;
+  --font-sm: 0.875rem;
+  --font-md: 1rem;
+  --font-lg: 1.125rem;
+  --font-xl: 1.375rem;
+  --font-2xl: 1.75rem;
+
+  /* Espaciado */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+
+  /* Radios */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
+  --radius-full: 999px;
+
+  /* Sombras */
+  --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.24);
+  --shadow-raised: 0 16px 40px rgba(0, 0, 0, 0.35);
+
+  /* Breakpoints (referencia; usar en media queries) */
+  --bp-sm: 480px;
+  --bp-md: 768px;
+  --bp-lg: 1024px;
+  --bp-xl: 1280px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: var(--font-md);
+  line-height: 1.5;
+}

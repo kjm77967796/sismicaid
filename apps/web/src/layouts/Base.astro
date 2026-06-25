@@ -1,0 +1,45 @@
+---
+import "../styles/tokens.css";
+import BottomNav from "../components/BottomNav.astro";
+
+interface Props {
+  title?: string;
+}
+const { title = "Sismicaid" } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#070A0F" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <div class="page">
+      <slot />
+    </div>
+    <BottomNav />
+    <script is:inline>
+      // Registro del Service Worker (PWA). El sw.js usa autoUpdate.
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", function () {
+          navigator.serviceWorker.register("/sw.js");
+        });
+      }
+    </script>
+  </body>
+</html>
+
+<style>
+  /* Deja espacio para la nav inferior fija. */
+  .page {
+    min-height: 100vh;
+    padding-bottom: 72px;
+  }
+</style>

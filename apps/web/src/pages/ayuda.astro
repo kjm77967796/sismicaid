@@ -1,0 +1,33 @@
+---
+import Base from "../layouts/Base.astro";
+import AyudaView from "../components/AyudaView.svelte";
+---
+
+<Base title="Ayuda · Sismicaid">
+  <main>
+    <header>
+      <h1>Ayuda disponible</h1>
+      <p class="lead">Refugios, hospitales, centros de acopio y puntos de servicio verificados.</p>
+    </header>
+    <AyudaView client:load />
+  </main>
+</Base>
+
+<style>
+  main {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: var(--space-5) var(--space-4) var(--space-8);
+  }
+  header {
+    margin-bottom: var(--space-5);
+  }
+  h1 {
+    font-size: var(--font-2xl);
+    margin: 0 0 var(--space-1);
+  }
+  .lead {
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+</style>

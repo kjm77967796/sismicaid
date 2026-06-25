@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "deny": [
+      "Bash(rm -rf *)",
+      "Bash(git push *)",
+      "Bash(git push --force *)",
+      "Bash(npm publish *)",
+      "Bash(pnpm publish *)"
+    ]
+  }
+}
