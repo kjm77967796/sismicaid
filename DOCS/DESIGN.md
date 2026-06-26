@@ -219,12 +219,13 @@ Items principales:
 1. Inicio
 2. Sismos
 3. Ayuda
-4. Reportar
-5. Guía
+4. Rescate
+5. Reportar
+6. Guía
 
 La navegación debe tener icono y texto.
 
-No usar más de 5 items principales.
+No usar más de 6 items principales.
 
 ### Desktop nav
 
