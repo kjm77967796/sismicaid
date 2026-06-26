@@ -33,6 +33,15 @@ const swUrl = link("/sw.js");
   <body>
     <div class="page">
       <slot />
+      <footer class="site-footer">
+        <p>
+          Desarrollado por
+          <a href="https://programacion-es.dev" target="_blank" rel="noopener">Programación en español</a>
+        </p>
+        <a class="contribute" href="https://github.com/pedrovelasquez9/sismicaid" target="_blank" rel="noopener">
+          Contribuir al proyecto
+        </a>
+      </footer>
     </div>
     <BottomNav />
     <script is:inline define:vars={{ swUrl }}>
@@ -52,5 +61,27 @@ const swUrl = link("/sw.js");
   .page {
     min-height: 100vh;
     padding-bottom: 72px;
+  }
+  .site-footer {
+    margin-top: var(--space-8);
+    padding: var(--space-5) var(--space-4);
+    border-top: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    text-align: center;
+    color: var(--color-text-soft);
+    font-size: var(--font-sm);
+  }
+  .site-footer a {
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+  .site-footer p {
+    margin: 0;
+  }
+  .site-footer .contribute {
+    font-weight: 600;
   }
 </style>
