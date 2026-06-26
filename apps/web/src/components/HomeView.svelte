@@ -95,6 +95,14 @@
 {:else}
   <StatusBanner variant={banner.variant} title={banner.title} detail={banner.detail} />
 
+  <a class="emergency-cta" href={link("/emergencia")}>
+    <span class="ico" aria-hidden="true">✆</span>
+    <span class="txt">
+      <strong>Emergencia</strong>
+      <span>Llamar a emergencias y avisar que estás a salvo</span>
+    </span>
+  </a>
+
   <section class="summary">
     <div class="head">
       <h2>Resumen sísmico</h2>
@@ -122,6 +130,35 @@
 {/if}
 
 <style>
+  .emergency-cta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin-top: var(--space-5);
+    padding: var(--space-4) var(--space-5);
+    min-height: 64px;
+    background: var(--color-danger);
+    color: #fff;
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    box-shadow: var(--shadow-raised);
+  }
+  .emergency-cta .ico {
+    font-size: var(--font-2xl);
+    line-height: 1;
+  }
+  .emergency-cta .txt {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .emergency-cta strong {
+    font-size: var(--font-lg);
+  }
+  .emergency-cta .txt span {
+    font-size: var(--font-sm);
+    opacity: 0.95;
+  }
   .summary {
     margin-top: var(--space-5);
   }

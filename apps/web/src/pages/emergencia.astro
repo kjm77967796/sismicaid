@@ -1,17 +1,17 @@
 ---
 import Base from "../layouts/Base.astro";
-import RescueView from "../components/RescueView.svelte";
+import EmergencyView from "../components/EmergencyView.svelte";
 import { link } from "../lib/links";
 ---
 
-<Base title="Personas atrapadas · SismicAid">
+<Base title="Emergencia · SismicAid">
   <main>
     <header>
       <a href={link("/")} class="back">← Inicio</a>
-      <h1>Personas atrapadas</h1>
-      <p class="lead">Reportes ciudadanos de rescate por zona. Ubicación aproximada, sin nombres.</p>
+      <h1>Emergencia</h1>
+      <p class="lead">Llamadas rápidas y aviso a tu familia. Funciona sin conexión.</p>
     </header>
-    <RescueView client:load />
+    <EmergencyView client:load />
   </main>
 </Base>
 
