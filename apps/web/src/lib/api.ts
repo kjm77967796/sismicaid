@@ -6,6 +6,7 @@ import type {
   ResourceDTO,
   SeismicEventDTO,
   StatusDTO,
+  TrappedPersonMarkerDTO,
 } from "@sismicaid/shared";
 
 // URL del backend. Configurable con PUBLIC_API_URL (expuesta al cliente por Vite).
@@ -69,4 +70,8 @@ export function getNeeds(query = ""): Promise<NeedDTO[]> {
 
 export function getReports(query = ""): Promise<CitizenReportDTO[]> {
   return apiGet<CitizenReportDTO[]>(`/api/reports${query}`);
+}
+
+export function getTrappedPersons(): Promise<TrappedPersonMarkerDTO[]> {
+  return apiGet<TrappedPersonMarkerDTO[]>("/api/trapped-persons");
 }
