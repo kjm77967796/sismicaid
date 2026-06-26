@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import type { RecommendationDTO } from "@sismicaid/shared";
   import { getRecommendations } from "../lib/api";
+  import { STATIC_RECOMMENDATIONS } from "../lib/recommendations.static";
   import RecommendationCard from "./RecommendationCard.svelte";
 
   // Etiquetas y orden de presentación por contexto (lo crítico primero).
@@ -16,7 +17,7 @@
   };
   const ORDER = Object.keys(CONTEXT_LABELS);
 
-  let state: "loading" | "ready" | "error" = "loading";
+  let state: "loading" | "ready" | "offline" = "loading";
   let recs: RecommendationDTO[] = [];
 
   $: groups = ORDER.map((ctx) => ({
@@ -30,18 +31,22 @@
       recs = await getRecommendations();
       state = "ready";
     } catch {
-      state = "error";
+      // Sin red / backend caído: las recomendaciones son contenido estático
+      // de autoprotección, así que mostramos el respaldo offline igualmente.
+      recs = STATIC_RECOMMENDATIONS;
+      state = "offline";
     }
   });
 </script>
 
 {#if state === "loading"}
   <p class="muted">Cargando recomendaciones...</p>
-{:else if state === "error"}
-  <p class="muted">No se pudieron cargar las recomendaciones. Verifica tu conexión e inténtalo de nuevo.</p>
 {:else if recs.length === 0}
   <p class="muted">No hay recomendaciones disponibles por ahora.</p>
 {:else}
+  {#if state === "offline"}
+    <p class="offline">Sin conexión. Mostrando la guía guardada en el dispositivo.</p>
+  {/if}
   {#each groups as group}
     <section>
       <h2>{group.label}</h2>
@@ -70,6 +75,15 @@
   }
   .muted {
     color: var(--color-text-soft);
+  }
+  .offline {
+    color: var(--color-text-muted);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    margin: 0 0 var(--space-5);
+    font-size: var(--font-sm);
   }
   @media (min-width: 768px) {
     .grid {
