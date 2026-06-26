@@ -99,7 +99,7 @@
     <span class="ico" aria-hidden="true">✆</span>
     <span class="txt">
       <strong>Emergencia</strong>
-      <span>Llamar al 171 y avisar que estás a salvo</span>
+      <span>Llamar a emergencias y avisar que estás a salvo</span>
     </span>
   </a>
 
