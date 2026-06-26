@@ -104,7 +104,9 @@ dominio público; las llamadas irán a `https://TU_DOMINIO/api/...`.
 
 ```bash
 cd /var/www/sismicaid
-PUBLIC_API_URL=https://TU_DOMINIO pnpm --filter @sismicaid/web build
+PUBLIC_BASE_PATH=/sismicaid \
+PUBLIC_API_URL=https://TU_DOMINIO/sismicaid \
+pnpm --filter @sismicaid/web build
 # salida estática: apps/web/dist
 ```
 
