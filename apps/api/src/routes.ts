@@ -7,6 +7,7 @@ import { createReport, isReportType, isUrgency, listReports } from "./services/r
 import { createReportSchema } from "./validation/report";
 import { isResourceType, listResources } from "./services/resources";
 import { listNeeds } from "./services/needs";
+import { listTrappedPersons, resolveTrappedPerson } from "./services/trapped-persons";
 
 // Rutas públicas de docs/API.md (todas implementadas en el MVP).
 
@@ -61,6 +62,22 @@ export async function registerRoutes(app: FastifyInstance): Promise<void> {
       return reply.code(201).send(dto);
     },
   );
+
+  app.get("/api/trapped-persons", async () => listTrappedPersons());
+
+  // Acción de moderación: marcar zona como rescatada. Protegida por token
+  // compartido (no hay auth aún). Devuelve 401 sin token válido.
+  app.patch("/api/reports/:id/resolve", async (req, reply) => {
+    const token = req.headers["x-moderation-token"];
+    const expected = process.env.MODERATION_TOKEN;
+    if (!expected || token !== expected) {
+      return reply.code(401).send({ error: "unauthorized" });
+    }
+    const { id } = req.params as { id: string };
+    const dto = await resolveTrappedPerson(id);
+    if (!dto) return reply.code(404).send({ error: "not_found" });
+    return dto;
+  });
 
   app.get("/api/resources", async (req) => {
     const q = req.query as Record<string, string | undefined>;
