@@ -115,6 +115,7 @@
   <nav class="quick" aria-label="Accesos rápidos">
     <a href={link("/sismos")}>Mapa sísmico</a>
     <a href={link("/ayuda")}>Ayuda cercana</a>
+    <a href={link("/rescate")}>Personas atrapadas</a>
     <a href={link("/reportar")}>Reportar</a>
     <a href={link("/recomendaciones")}>Recomendaciones</a>
   </nav>
