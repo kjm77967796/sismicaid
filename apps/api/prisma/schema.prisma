@@ -360,6 +360,8 @@ model CitizenReport {
   publicSafeSummary  String?                  @map("public_safe_summary")
   verificationStatus ReportVerificationStatus @default(pending) @map("verification_status")
   moderatorNotes     String?                  @map("moderator_notes")
+  // Marca cuándo se confirmó el rescate/cierre. NULL = activo. Spec rescate.
+  resolvedAt         DateTime?                @map("resolved_at")
   createdAt          DateTime                 @default(now()) @map("created_at")
   updatedAt          DateTime                 @updatedAt @map("updated_at")
 
