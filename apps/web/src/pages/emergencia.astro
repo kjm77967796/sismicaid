@@ -1,0 +1,40 @@
+---
+import Base from "../layouts/Base.astro";
+import EmergencyView from "../components/EmergencyView.svelte";
+import { link } from "../lib/links";
+---
+
+<Base title="Emergencia · Sismicaid">
+  <main>
+    <header>
+      <a href={link("/")} class="back">← Inicio</a>
+      <h1>Emergencia</h1>
+      <p class="lead">Llamadas rápidas y aviso a tu familia. Funciona sin conexión.</p>
+    </header>
+    <EmergencyView client:load />
+  </main>
+</Base>
+
+<style>
+  main {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: var(--space-5) var(--space-4) var(--space-8);
+  }
+  header {
+    margin-bottom: var(--space-6);
+  }
+  .back {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-size: var(--font-sm);
+  }
+  h1 {
+    font-size: var(--font-2xl);
+    margin: var(--space-2) 0 var(--space-1);
+  }
+  .lead {
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+</style>
